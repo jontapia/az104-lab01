@@ -4,7 +4,7 @@ Jonathan Tapia · AZ-104 · CompTIA A+ / Network+ / Security+
 
 After passing AZ-104 I wanted to actually build the things the exam covers, instead of just knowing the answers to show that I understand more than just the material and know how to build. This lab sets up a small Azure environment a help desk would support: a user and group in Entra ID, a server, network rules, backups and alerts. Using IAC to deploy the resources 
 
-It's the cloud follow-up to my [Active Directory home lab](https://github.com/jontapia/ad-homelab) and [Jira help desk simulation](https://github.com/jontapia/jiraticketing).
+It's the cloud follow-up to my [Active Directory home lab](https://github.com/jontapia/ad-homelab-jt) and [Jira help desk simulation](https://github.com/jontapia/jiraticketing).
 
 ## What it builds
 
@@ -58,11 +58,11 @@ flowchart LR
 
 The first deploy didn't work. This is what I hit and how I fixed it:
 
-1. **`SkuNotAvailable` for Standard_B2s in East US.** I tried four other sizes and every one failed the same way. The problem wasn't the size: my free-trial subscription had no access to East US capacity at all.
-2. **Moved to West US 2.** Resources don't have to be in the same region as their resource group, so I passed `location=westus2` without recreating anything. `Standard_B2als_v2` passed validation there.
-3. **`InvalidResourceLocation` while testing regions.** A half-finished attempt had already created the Log Analytics workspace in West US 2, so every other region failed because that name was taken. Lesson: once one region gets past validation, stick with it.
+1. **`SkuNotAvailable` for Standard_B2s in East US.** I tried four other sizes and every one failed the same way. The problem wasn't the size: my free-trial subscription had no access to East US capacity at all which was odd because the capacity of East Us should be available.
+2. **Moved to West US 2.** Resources don't have to be in the same region as their resource group, so I passed `location=westus2` without recreating anything. `Standard_B2als_v2` passed all the checks and validation.
+3. **`InvalidResourceLocation` while testing regions.** A half-finished attempt had already created the Log Analytics workspace in West US 2, so every other region failed because that name was taken. Lesson: once one region gets past validation, make sure to keep using that if it fits all of your needs, so you don't have to keep going around to see which one is working.
 4. **`BMSUserErrorRedundancySettingsUseVaultApi`.** I was setting backup storage redundancy with the separate `backupstorageconfig` resource, which Azure now rejects. I moved it to `redundancySettings` on the vault itself, and the deploy went through.
-5. **Teardown.** A vault with backup data blocks the resource group from being deleted, so the backup has to be stopped and its data deleted first. `teardown.sh` does this in order.
+5. **Teardown.** A vault with backup data blocks the resource group from being deleted, so the backup has to be stopped and its data deleted first. `teardown.sh` does this in order, had the use of AI here as it helped me boost productivity, and saved a lot of time manually deleting resources
 
 ## What I tested
 
@@ -73,26 +73,7 @@ The first deploy didn't work. This is what I hit and how I fixed it:
 
 <!-- If you also signed in as jontapia.helpdesk and got denied editing the NSG, add it here as #5 with a screenshot. -->
 
-## Run it yourself
 
-You need an Azure subscription where you're Owner (a free trial works) and Entra rights to create users and groups.
-
-```bash
-# Azure Cloud Shell (Bash)
-git clone https://github.com/jontapia/jontapia-az104-lab.git
-cd jontapia-az104-lab
-chmod +x deploy.sh teardown.sh
-LOCATION=westus2 VM_SIZE=Standard_B2als_v2 ./deploy.sh
-```
-
-It asks for your home public IP, an alert email and a VM password. When you're done:
-
-```bash
-./teardown.sh          # deletes the Azure resources, keeps the Entra user/group
-./teardown.sh --all    # also deletes the Entra user and group
-```
-
-A few hours costs well under a dollar. Don't leave it running, though.
 
 ## Files
 
