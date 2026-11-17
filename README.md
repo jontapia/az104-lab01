@@ -2,7 +2,7 @@
 
 Jonathan Tapia · AZ-104 · CompTIA A+ / Network+ / Security+
 
-After passing AZ-104 I wanted to actually build the things the exam covers, instead of just knowing the answers. This lab sets up a small Azure environment a help desk would support: a user and group in Entra ID, a server, network rules, backups and alerts. I wrote it in Bicep so I can tear it down and rebuild it in about 10 minutes instead of clicking through the portal every time.
+After passing AZ-104 I wanted to actually build the things the exam covers, instead of just knowing the answers to show that I understand more than just the material and know how to build. This lab sets up a small Azure environment a help desk would support: a user and group in Entra ID, a server, network rules, backups and alerts. Using IAC to deploy the resources 
 
 It's the cloud follow-up to my [Active Directory home lab](https://github.com/jontapia/ad-homelab) and [Jira help desk simulation](https://github.com/jontapia/jiraticketing).
 
@@ -39,11 +39,11 @@ flowchart LR
 
 ## Why I made these choices
 
-- **Virtual Machine Contributor instead of Contributor.** A Tier 1 tech should be able to restart a server, not open firewall ports. This role can manage the VM but not the network or storage it uses. I scoped it to the resource group so a compromised help desk account can't reach anything else in the subscription.
-- **RDP only from my IP.** Leaving 3389 open to the internet gets you brute-forced within hours. The explicit deny rule isn't strictly needed (Azure has a default deny), but it makes the intent obvious when you look at effective security rules.
-- **Alert on NSG changes.** Someone opening a port is one of the most common ways a cloud environment gets exposed, so I want to know about it right away.
-- **Soft delete is off on the backup vault.** That's only so I can delete the lab the same day. In production I'd leave it on, because attackers go after backups first.
-- **Auto-shutdown and teardown script.** I'm on the free trial, so cost control mattered.
+- **Virtual Machine Contributor instead of Contributor.** I believe that principle of least privilege is one of the most important aspect when assigning roles to users. A Tier 1 tech should be able to restart a server, not open firewall ports. This role can manage the VM but not the network or storage it uses which could prevent malicious actors from abusing the role of an account. I scoped it to the resource group so a compromised help desk account can't reach anything else in the subscription to limit the scope if there was any malicious actors.
+- **RDP only from my IP.** Leaving 3389 open to the internet is an open door for malicious actors/hackers to get into a system. The explicit deny rule isn't strictly needed (Azure has a default deny), but it makes the intent obvious when you look at effective security rules.
+- **Alert on NSG changes.** Someone opening a port is one of the most common ways a cloud environment gets exposed, so I want to know about it right away and be able to make any changes if its needed.
+- **Soft delete is off on the backup vault.** That's only so I can delete the lab the same day. In production I'd leave it on, because attackers go after backups first, and also it is a lifesaver if your were to ever accidentally delete an important resources.
+- **Auto-shutdown and teardown script.** I'm on the free trial, so I used a script to make sure to spend as little as possible
 
 ## Proof it ran
 
