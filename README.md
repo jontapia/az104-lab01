@@ -1,6 +1,5 @@
 # Azure Help Desk Lab (AZ-104)
 
-Jonathan Tapia · AZ-104 · CompTIA A+ / Network+ / Security+
 
 After passing AZ-104 I wanted to actually build the things the exam covers, instead of just knowing the answers to show that I understand more than just the material and know how to build. This lab sets up a small Azure environment a help desk would support: a user and group in Entra ID, a server, network rules, backups and alerts. Using IAC to deploy the resources 
 
