@@ -76,7 +76,7 @@ The first deploy didn't work. This is what I hit and how I fixed it:
 
 ## Files
 
-| File | What it does |
+| File | What it does | AI was implemented to help me troubleshoot and resolve code errors
 |---|---|
 | `main.bicep` | Every Azure resource (network, VM, RBAC, storage, backup, monitoring) |
 | `deploy.sh` | Creates the Entra user and group, then deploys the Bicep |
